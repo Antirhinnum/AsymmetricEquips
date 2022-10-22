@@ -1,0 +1,8 @@
+displayName = Asymmetric Equipment
+author = Snek
+version = 1.0.0.0
+hideCode = true
+hideResources = true
+includeSource = false
+buildIgnore = build.txt, ./*, bin/*, obj/*, Properties/*, .gitignore, LICENSE, README.md, *.pdn
+includePDB = false

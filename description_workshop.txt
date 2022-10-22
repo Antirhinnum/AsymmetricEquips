@@ -1,0 +1,20 @@
+Ever wanted to wear just one eyepatch? Well now you can!
+
+Certain items can now be worn asymmetrically, which is noted in their tooltips. Simply hold shift and control, then click the item.
+Note that this can only be done when the item is equipped or in the player's inventory.
+
+[b]Call Methods[/b]:
+See [url=https://github.com/tModLoader/tModLoader/wiki/Expert-Cross-Mod-Content#call-aka-modcall-intermediate]Expert Cross Mod Content[/url] for how to use Mod.Call().
+
+[b]AddEquip[/b]:
+[code]mod.Call("AddEquip", EquipType equipType, int equipId, int newId = -1, PlayerSide side = PlayerSide.Right)[/code][list][*]equipType is the EquipType you'd like to add asymmetry for.
+[*]equipId is the id of said equip.
+[*]newId is what id to replace the equip with. This defaults to -1, which removes the equip. This is useful for items like the Molten Skull Rose: The player shouldn't stop wearing the skull when turned around, but they should lose the rose. See below for an example.
+[*]side is which side of the player this equips appears on when the player is facing right. For 99% of equips, this is 1 (Right). HandsOff equips use 2 (Left). If your equip has both HandsOn and HandsOff, consider using AddGlove instead.
+ [*]PlayerSide values: 0 (Both); 1 (Right); 2 (Left)
+[*][b]Ex[/b]: Band of Regeneration: mod.Call("AddEquip", EquipType.HandsOn, ArmorIDs.HandOn.BandofRegeneration);
+[*][b]Ex[/b]: Molten Skull Rose: mod.Call("AddEquip", EquipType.Face, ArmorIDs.Face.MoltenSkullRose, ArmorIDs.Face.LavaSkull, 1);[/list]
+[b]AddGlove[/b]:
+A simpler method specifically for adding gloves -- items that show up on both of the player's hands (HandsOn and HandsOff).
+[code]mod.Call("AddGlove", int itemId)[/code][list][*]itemId is the ID of the glove item. This item must have both a HandsOn and HandsOff equip for this method to work.
+[*][b]Ex[/b]: Titan Glove: mod.Call("AddGlove", ItemID.TitanGlove);[/list]

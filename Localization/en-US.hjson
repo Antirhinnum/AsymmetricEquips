@@ -1,0 +1,9 @@
+﻿Mods.AsymmetricEquips:
+{
+	ExtraTooltip:
+	{
+		FlipPossible: "This item can be worn asymmetrically\nShift+Ctrl+Click to change side"
+		Left: "This item is being worn on the player's left side"
+		Right: "This item is being worn on the player's right side"
+	}
+}
