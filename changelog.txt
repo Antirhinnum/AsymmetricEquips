@@ -1,0 +1,2 @@
+﻿[list][*]Added validation to mod.Call().
+[*]Cleaned up the equip lookup system.[/list]

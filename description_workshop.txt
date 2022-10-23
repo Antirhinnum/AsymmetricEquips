@@ -3,6 +3,8 @@ Ever wanted to wear just one eyepatch? Well now you can!
 Certain items can now be worn asymmetrically, which is noted in their tooltips. Simply hold shift and control, then click the item.
 Note that this can only be done when the item is equipped or in the player's inventory.
 
+[url=https://github.com/Antirhinnum/AsymmetricEquips]Source on GitHub[/url]
+
 [b]Call Methods[/b]:
 See [url=https://github.com/tModLoader/tModLoader/wiki/Expert-Cross-Mod-Content#call-aka-modcall-intermediate]Expert Cross Mod Content[/url] for how to use Mod.Call().
 

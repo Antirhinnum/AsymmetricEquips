@@ -4,6 +4,3 @@ Certain items can now be worn asymmetrically, which is noted in their tooltips. 
 Note that this can only be done when the item is equipped or in the player's inventory.
 
 For modders, see the Steam Workshop page for Call methods you can use to add support to your own equips!
-
-Changelog:
- - 1.0.0.0: Release

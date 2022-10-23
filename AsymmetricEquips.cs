@@ -12,7 +12,7 @@ public sealed class AsymmetricEquips : Mod
 	{
 		if (AsymmetricSystem._finishedEquips)
 		{
-			Logger.Error("Error: Call must be called before AddRecipes -- PostSetupContent works best.");
+			Logger.Error("Error: Call must be called before AddRecipes -- PostSetupContent works best");
 			return false;
 		}
 
@@ -29,7 +29,24 @@ public sealed class AsymmetricEquips : Mod
 			{
 				case "AddEquip":
 					// Args: EquipType, equip ID, new ID, PlayerSide (0-2)
-					AsymmetricSystem.AddEquip((EquipType)Convert.ToInt32(args[1]), Convert.ToInt32(args[2]), Convert.ToInt32(args[3] ?? -1), (PlayerSide)Convert.ToInt32(args[4] ?? PlayerSide.Right));
+					EquipType equipType = (EquipType)Convert.ToInt32(args[1]);
+					int id = Convert.ToInt32(args[2]);
+					int newId = Convert.ToInt32(args[3] ?? -1);
+					PlayerSide side = (PlayerSide)Convert.ToInt32(args[4] ?? PlayerSide.Right);
+
+					if (id < 0)
+					{
+						Logger.Error($"Error: The passed ID \"{id}\" must be greater than 0");
+						return false;
+					}
+
+					if (!Enum.IsDefined(side))
+					{
+						Logger.Error($"Error: The passed side \"{side}\" must be 0, 1, or 2");
+						return false;
+					}
+
+					AsymmetricSystem.AddEquip(equipType, id, newId, side);
 					break;
 
 				case "AddGlove":

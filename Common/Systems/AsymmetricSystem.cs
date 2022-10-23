@@ -47,7 +47,7 @@ public sealed class AsymmetricSystem : ModSystem
 	/// <summary>
 	/// Relates an <see cref="EquipType"/> and equip ID with an <see cref="AsymmetricData"/>.
 	/// </summary>
-	public static IReadOnlyDictionary<(EquipType, int), AsymmetricData> AsymmetricsByEquip { get; private set; }
+	public static IReadOnlyDictionary<EquipSlot, AsymmetricData> AsymmetricsByEquip { get; private set; }
 
 	/// <summary>
 	/// If true, then no more equips can be added.
@@ -68,7 +68,7 @@ public sealed class AsymmetricSystem : ModSystem
 	public override void AddRecipes()
 	{
 		_finishedEquips = true;
-		AsymmetricsByEquip = _asymmetrics.ToDictionary(a => (a.equipType, a.id));
+		AsymmetricsByEquip = _asymmetrics.ToDictionary(a => new EquipSlot(a.equipType, a.id));
 	}
 
 	public override void SetStaticDefaults()
@@ -191,21 +191,21 @@ public sealed class AsymmetricSystem : ModSystem
 	public static bool ItemIsAsymmetrical(Item item)
 	{
 		return AsymmetricsByEquip != null &&
-			(AsymmetricsByEquip.ContainsKey((EquipType.Head, item.headSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Body, item.bodySlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Legs, item.legSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.HandsOn, item.handOnSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.HandsOff, item.handOffSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Back, item.backSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Front, item.frontSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Shoes, item.shoeSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Waist, item.waistSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Wings, item.wingSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Shield, item.shieldSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Neck, item.neckSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Face, item.faceSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Balloon, item.balloonSlot)) ||
-			AsymmetricsByEquip.ContainsKey((EquipType.Beard, item.beardSlot)));
+			(AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Head, item.headSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Body, item.bodySlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Legs, item.legSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.HandsOn, item.handOnSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.HandsOff, item.handOffSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Back, item.backSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Front, item.frontSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Shoes, item.shoeSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Waist, item.waistSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Wings, item.wingSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Shield, item.shieldSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Neck, item.neckSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Face, item.faceSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Balloon, item.balloonSlot)) ||
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Beard, item.beardSlot)));
 	}
 
 	/// <summary>

@@ -62,13 +62,13 @@ public sealed class AsymmetricItem : GlobalItem
 
 		bool leftSideEquip = side == PlayerSide.Left;
 		bool facingLeft = player.direction == -1;
-		IReadOnlyDictionary<(EquipType, int), AsymmetricData> asymmetricsByEquip = AsymmetricSystem.AsymmetricsByEquip;
+		IReadOnlyDictionary<EquipSlot, AsymmetricData> asymmetricsByEquip = AsymmetricSystem.AsymmetricsByEquip;
 
 		AsymmetricData asymmetricData;
 		if (leftSideEquip != facingLeft)
 		{
 			// Only equips that default to the player's front side are updated here
-			if (equip.headSlot > 0 && asymmetricsByEquip.TryGetValue((EquipType.Head, equip.headSlot), out asymmetricData))
+			if (equip.headSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Head, equip.headSlot), out asymmetricData))
 			{
 				equip.headSlot = asymmetricData.newId;
 				if (asymmetricData.newId == ArmorIDs.Head.FamiliarWig && player.TryGetModPlayer(out AsymmetricPlayer aPlayer))
@@ -76,51 +76,51 @@ public sealed class AsymmetricItem : GlobalItem
 					aPlayer.flippedToHair = true;
 				}
 			}
-			if (equip.bodySlot > 0 && asymmetricsByEquip.TryGetValue((EquipType.Body, equip.bodySlot), out asymmetricData))
+			if (equip.bodySlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Body, equip.bodySlot), out asymmetricData))
 			{
 				equip.bodySlot = asymmetricData.newId;
 			}
-			if (equip.legSlot > 0 && asymmetricsByEquip.TryGetValue((EquipType.Legs, equip.legSlot), out asymmetricData))
+			if (equip.legSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Legs, equip.legSlot), out asymmetricData))
 			{
 				equip.legSlot = asymmetricData.newId;
 			}
-			if (equip.handOnSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.HandsOn, equip.handOnSlot), out asymmetricData))
+			if (equip.handOnSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.HandsOn, equip.handOnSlot), out asymmetricData))
 			{
 				equip.handOnSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.backSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Back, equip.backSlot), out asymmetricData))
+			if (equip.backSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Back, equip.backSlot), out asymmetricData))
 			{
 				equip.backSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.frontSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Front, equip.frontSlot), out asymmetricData))
+			if (equip.frontSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Front, equip.frontSlot), out asymmetricData))
 			{
 				equip.frontSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.shoeSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Shoes, equip.shoeSlot), out asymmetricData))
+			if (equip.shoeSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Shoes, equip.shoeSlot), out asymmetricData))
 			{
 				equip.shoeSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.waistSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Waist, equip.waistSlot), out asymmetricData))
+			if (equip.waistSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Waist, equip.waistSlot), out asymmetricData))
 			{
 				equip.waistSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.wingSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Wings, equip.wingSlot), out asymmetricData))
+			if (equip.wingSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Wings, equip.wingSlot), out asymmetricData))
 			{
 				equip.wingSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.shieldSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Shield, equip.shieldSlot), out asymmetricData))
+			if (equip.shieldSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Shield, equip.shieldSlot), out asymmetricData))
 			{
 				equip.shieldSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.neckSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Neck, equip.neckSlot), out asymmetricData))
+			if (equip.neckSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Neck, equip.neckSlot), out asymmetricData))
 			{
 				equip.neckSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.faceSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Face, equip.faceSlot), out asymmetricData))
+			if (equip.faceSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Face, equip.faceSlot), out asymmetricData))
 			{
 				equip.faceSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.beardSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Beard, equip.beardSlot), out asymmetricData))
+			if (equip.beardSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Beard, equip.beardSlot), out asymmetricData))
 			{
 				equip.beardSlot = (sbyte)asymmetricData.newId;
 			}
@@ -128,11 +128,11 @@ public sealed class AsymmetricItem : GlobalItem
 		else
 		{
 			// Only equips that default to the player's back side are changed here
-			if (equip.handOffSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.HandsOff, equip.handOffSlot), out asymmetricData))
+			if (equip.handOffSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.HandsOff, equip.handOffSlot), out asymmetricData))
 			{
 				equip.handOffSlot = (sbyte)asymmetricData.newId;
 			}
-			if (equip.balloonSlot > 0 && asymmetricsByEquip.TryGetValue(((EquipType, int))(EquipType.Balloon, equip.balloonSlot), out asymmetricData))
+			if (equip.balloonSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Balloon, equip.balloonSlot), out asymmetricData))
 			{
 				equip.GetGlobalItem<AsymmetricItem>().frontBalloonSlot = equip.balloonSlot;
 				equip.balloonSlot = (sbyte)asymmetricData.newId;
@@ -147,6 +147,11 @@ public sealed class AsymmetricItem : GlobalItem
 	/// </summary>
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
+		if (!item.TryGetGlobalItem(out AsymmetricItem aItem))
+		{
+			return;
+		}
+
 		// Only tell players they can flip items if they're in a slot that's syncable.
 		if (AsymmetricSystem._allowedFlipContexts.Contains(item.tooltipContext))
 		{
@@ -158,9 +163,9 @@ public sealed class AsymmetricItem : GlobalItem
 		}
 
 		// Only tell players an item's side if it's not default.
-		if (Side != PlayerSide.Default)
+		if (aItem.Side != PlayerSide.Default)
 		{
-			TooltipLine line = new(Mod, $"{nameof(AsymmetricEquips)}:{nameof(Side)}", Language.GetTextValue($"Mods.{nameof(AsymmetricEquips)}.ExtraTooltip.{Side}"))
+			TooltipLine line = new(Mod, $"{nameof(AsymmetricEquips)}:{nameof(Side)}", Language.GetTextValue($"Mods.{nameof(AsymmetricEquips)}.ExtraTooltip.{aItem.Side}"))
 			{
 				OverrideColor = Color.Salmon
 			};
