@@ -45,6 +45,11 @@ public class FrontBalloonPlayerLayer : PlayerDrawLayer
 		drawInfo.drawPlayer.balloon = frontBalloon;
 		drawInfo.cBalloon = frontBalloonDye;
 
+		if (frontBalloon > 0 && frontBalloon < ArmorIDs.Balloon.Count)
+		{
+			Main.instance.LoadAccBalloon(frontBalloon);
+		}
+
 		Vector2 originalOffset = Main.OffsetsPlayerOffhand[drawInfo.drawPlayer.bodyFrame.Y / 56];
 		if (drawInfo.drawPlayer.direction != 1)
 			originalOffset.X = drawInfo.drawPlayer.width - originalOffset.X;

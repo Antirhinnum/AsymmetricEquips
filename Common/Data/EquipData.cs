@@ -8,21 +8,21 @@ namespace AsymmetricEquips.Common.Data;
 /// </summary>
 internal readonly struct EquipData
 {
-	public readonly int head;
-	public readonly int body;
-	public readonly int legs;
-	public readonly sbyte handOn;
-	public readonly sbyte handOff;
-	public readonly sbyte back;
-	public readonly sbyte front;
-	public readonly sbyte shoe;
-	public readonly sbyte waist;
-	public readonly sbyte wing;
-	public readonly sbyte shield;
-	public readonly sbyte neck;
-	public readonly sbyte face;
-	public readonly sbyte balloon;
-	public readonly sbyte beard;
+	public readonly int head = -1;
+	public readonly int body = -1;
+	public readonly int legs = -1;
+	public readonly sbyte handOn = -1;
+	public readonly sbyte handOff = -1;
+	public readonly sbyte back = -1;
+	public readonly sbyte front = -1;
+	public readonly sbyte shoe = -1;
+	public readonly sbyte waist = -1;
+	public readonly sbyte wing = -1;
+	public readonly sbyte shield = -1;
+	public readonly sbyte neck = -1;
+	public readonly sbyte face = -1;
+	public readonly sbyte balloon = -1;
+	public readonly sbyte beard = -1;
 
 	// Custom slots
 	public readonly sbyte frontBalloon;

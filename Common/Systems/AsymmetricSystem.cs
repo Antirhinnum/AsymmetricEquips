@@ -37,6 +37,8 @@ public sealed class AsymmetricSystem : ModSystem
 		ItemSlot.Context.EquipAccessoryVanity,
 		ItemSlot.Context.ModdedAccessorySlot,
 		ItemSlot.Context.ModdedVanityAccessorySlot
+		//ItemSlot.Context.DisplayDollArmor,
+		//ItemSlot.Context.DisplayDollAccessory
 	};
 
 	/// <summary>

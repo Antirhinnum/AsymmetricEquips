@@ -1,2 +1,5 @@
-﻿[list][*]Added validation to mod.Call().
-[*]Cleaned up the equip lookup system.[/list]
+﻿[list][*]Fixed certain non-asymmetric equips not dying correctly when an asymmetric equip was equipped.
+[*]Fixed asymmetric head equips' dyes bleeding into the player's hair.
+[*]Fixed asymmetric balloons not showing up on the menu or when a player first loads into a world.
+[*]Fixed invalid vanilla accessory slots from being used.
+[*]Fixed some code being run when it didn't have to.[/list]

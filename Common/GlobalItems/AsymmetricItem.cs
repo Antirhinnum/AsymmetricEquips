@@ -42,8 +42,13 @@ public sealed class AsymmetricItem : GlobalItem
 	/// <returns>A cache of the original item's equip slots.</returns>
 	internal static EquipData HandleAsymmetricism(Item equip, Player player)
 	{
-		EquipData cache = new(equip ?? new Item());
-		if (equip == null || equip.IsAir || player == null)
+		if (equip == null)
+		{
+			return new EquipData();
+		}
+
+		EquipData cache = new(equip);
+		if (equip.IsAir || player == null)
 		{
 			return cache;
 		}

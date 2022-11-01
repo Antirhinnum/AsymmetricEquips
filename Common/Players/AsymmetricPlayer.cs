@@ -81,7 +81,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// Most head equip asymmetrics set newId to ArmorIDs.Head.FamiliarHair (0) since it looks more natural for the equip to vanish than to be replaced by the player's helmet.<br/>
 	/// However, doing this fucks with hair drawing: If faceHead >= 0, then hair is only allowed to draw if head == 0.<br/>
 	/// This makes hair appear/disappear when the player turns around.<br/>
-	/// This hook fixes that.
+	/// This hook fixes that. It also makes sure that dyes don't transfer over to the head.
 	/// </summary>
 	private void HideHairForAsymmetrics(On_Player.orig_GetHairSettings orig, Player self, out bool fullHair, out bool hatHair, out bool hideHair, out bool backHairDraw, out bool drawsBackHairWithoutHeadgear)
 	{
@@ -90,6 +90,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 		if (self.TryGetModPlayer(out AsymmetricPlayer aPlayer) && aPlayer.flippedToHair)
 		{
 			hideHair |= self.faceHead >= 0;
+			self.cHead = 0;
 		}
 	}
 
@@ -104,13 +105,10 @@ public sealed class AsymmetricPlayer : ModPlayer
 		EquipData?[] data = new EquipData?[vanillaLength];
 		for (int i = 0; i < vanillaLength; i++)
 		{
-			Item equip = self.armor[i];
-			if (!equip.TryGetGlobalItem(out AsymmetricItem aItem) || aItem.Side == PlayerSide.Default)
+			if (self.IsAValidEquipmentSlotForIteration(i))
 			{
-				continue;
+				data[i] = AsymmetricItem.HandleAsymmetricism(self.armor[i], self);
 			}
-
-			data[i] = AsymmetricItem.HandleAsymmetricism(equip, self);
 		}
 
 		EquipData?[] moddedData = null;
@@ -134,28 +132,54 @@ public sealed class AsymmetricPlayer : ModPlayer
 
 		orig(self);
 
-		// If no items are asymmetric, then don't try to clean up.
-		// This also stops UpdateDyes() from being called.
-		if (data.All(a => a == null) && moddedData != null && moddedData.All(a => a == null))
+		// If no items are asymmetric, then there's nothing to clean up.
+		if (data.All(a => a == null) && (moddedData == null || moddedData!.All(a => a == null)))
 		{
 			return;
 		}
 
 		// UpdateDyes usually runs way earlier than PlayerFrame, which results in a one-frame delay between an item switching sides and its dye applying.
 		// This fixes that by updating dyes using the new equip slots.
-		self.UpdateDyes();
+
+		#region Custom Dye Logic
+
+		// Some equips that change slots to be asymmetric (ex: handsOn/handsOff) have a one-frame delay before the correct dye is applied.
+		// This used to be fixed by calling Player.UpdateDyes() again, but that caused other issues (specifically, the Tax Collector's Suit wasn't getting dyed correctly).
+		// Now, dyes are manually reassigned for these equips.
+
+		for (int i = 0; i < 20; i++)
+		{
+			if (self.IsAValidEquipmentSlotForIteration(i))
+			{
+				int armorSlot = i % 10;
+				UpdateSwappedDyes(self, i < 10, self.hideVisibleAccessory[armorSlot], self.armor[i], self.dye[armorSlot]);
+			}
+		}
+
+		if (mPlayer != null)
+		{
+			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
+			for (int i = 0; i < mPlayer.SlotCount; i++)
+			{
+				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
+				{
+					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
+					UpdateSwappedDyes(self, true, modAccessorySlot.HideVisuals, modAccessorySlot.FunctionalItem, modAccessorySlot.DyeItem);
+					UpdateSwappedDyes(self, false, modAccessorySlot.HideVisuals, modAccessorySlot.VanityItem, modAccessorySlot.DyeItem);
+				}
+			}
+		}
+
+		#endregion Custom Dye Logic
 
 		#region Restore
 
 		for (int i = 0; i < vanillaLength; i++)
 		{
-			if (data[i] == null)
+			if (data[i] != null && self.IsAValidEquipmentSlotForIteration(i))
 			{
-				continue;
+				data[i].Value.Retrieve(self.armor[i]);
 			}
-
-			Item equip = self.armor[i];
-			data[i].Value.Retrieve(equip);
 		}
 
 		if (mPlayer != null)
@@ -174,6 +198,38 @@ public sealed class AsymmetricPlayer : ModPlayer
 		}
 
 		#endregion Restore
+	}
+
+	/// <summary>
+	/// Updates dyes for equips that swap slots to be asymmetric.<br/>
+	/// Specifically, <see cref="EquipType.HandsOn"/> and <see cref="EquipType.HandsOff"/>.
+	/// </summary>
+	private static void UpdateSwappedDyes(Player player, bool isNotInVanitySlot, bool isSetToHidden, Item armorItem, Item dyeItem)
+	{
+		if (armorItem.IsAir || (isNotInVanitySlot && isSetToHidden))
+			return;
+
+		if (armorItem.handOnSlot > 0)
+			player.cHandOn = dyeItem.dye;
+
+		if (armorItem.handOffSlot > 0)
+			player.cHandOff = dyeItem.dye;
+
+		if (armorItem.balloonSlot > 0)
+		{
+			if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[armorItem.balloonSlot])
+				player.cBalloonFront = dyeItem.dye;
+			else
+				player.cBalloon = dyeItem.dye;
+		}
+
+		if (armorItem.TryGetGlobalItem(out AsymmetricItem aItem) && aItem.frontBalloonSlot > -1 && player.TryGetModPlayer(out AsymmetricPlayer aPlayer))
+		{
+			if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[aItem.frontBalloonSlot])
+				aPlayer.cFrontBalloonInner = dyeItem.dye;
+			else
+				aPlayer.cFrontBalloon = dyeItem.dye;
+		}
 	}
 
 	/// <summary>
@@ -225,13 +281,9 @@ public sealed class AsymmetricPlayer : ModPlayer
 		if (aItem.frontBalloonSlot > -1 && self.TryGetModPlayer(out AsymmetricPlayer aPlayer))
 		{
 			if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[aItem.frontBalloonSlot])
-			{
 				aPlayer.cFrontBalloonInner = dyeItem.dye;
-			}
 			else
-			{
 				aPlayer.cFrontBalloon = dyeItem.dye;
-			}
 		}
 
 		data.Retrieve(armorItem);
@@ -290,14 +342,20 @@ public sealed class AsymmetricPlayer : ModPlayer
 				{
 					NetMessage.SendData(MessageID.SyncEquipment, -1, Main.myPlayer, null, Main.myPlayer, slot);
 				}
-				else if (context < 0) // Modded slots
+				else if (context < 0) // Modded equip slots
 				{
 					_ModAccessorySlotPlayer_NetHandler_SendSlot.Invoke(null, new object[] { -1, Main.myPlayer, slot, inventory[slot] });
 				}
-				else // Vanilla slots
+				else // Vanilla equip slots
 				{
 					NetMessage.SendData(MessageID.SyncEquipment, -1, Main.myPlayer, null, Main.myPlayer, PlayerItemSlotID.Armor0 + slot);
 				}
+
+				// This should make Mannequins work, but Shift-Control-Clicking items still moves them. Oh well.
+				//else if ((context == ItemSlot.Context.DisplayDollArmor || context == ItemSlot.Context.DisplayDollAccessory) && Main.LocalPlayer.tileEntityAnchor.IsInValidUseTileEntity() && Main.LocalPlayer.tileEntityAnchor.GetTileEntity() is TEDisplayDoll displayDoll)
+				//{
+				//	NetMessage.SendData(MessageID.TEDisplayDollItemSync, -1, -1, null, Main.myPlayer, displayDoll.ID, slot);
+				//}
 			}
 
 			// Don't move the item to any other inventory.
