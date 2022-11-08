@@ -1,3 +1,4 @@
+using AsymmetricEquips.Common.GlobalItems;
 using AsymmetricEquips.Common.Systems;
 using System;
 using Terraria;
@@ -10,12 +11,6 @@ public sealed class AsymmetricEquips : Mod
 {
 	public override object Call(params object[] args)
 	{
-		if (AsymmetricSystem._finishedEquips)
-		{
-			Logger.Error("Error: Call must be called before AddRecipes -- PostSetupContent works best");
-			return false;
-		}
-
 		Array.Resize(ref args, 5);
 		if (args[0] is not string key)
 		{
@@ -27,8 +22,33 @@ public sealed class AsymmetricEquips : Mod
 		{
 			switch (key)
 			{
+				case "ItemOnFrontSide":
+				{
+					// Args: Item, Player
+					Item item = (Item)args[1];
+					return !item.TryGetGlobalItem(out AsymmetricItem aItem) || aItem.ItemOnFrontSide((Player)args[2]);
+				}
+			}
+		}
+		catch
+		{
+			Logger.Error("Error: Call failed for message " + key);
+			return false;
+		}
+
+		if (AsymmetricSystem._finishedEquips)
+		{
+			Logger.Error($"Error: \"{key}\" is either an unknown key, or one that must be used before AddRecipes. PostSetupContent works best");
+			return false;
+		}
+
+		try
+		{
+			switch (key)
+			{
 				case "AddEquip":
-					// Args: EquipType, equip ID, new ID, PlayerSide (0-2)
+				{
+					// Args: EquipType, equip ID, new ID (int?), PlayerSide (int?) (0-2)
 					EquipType equipType = (EquipType)Convert.ToInt32(args[1]);
 					int id = Convert.ToInt32(args[2]);
 					int newId = Convert.ToInt32(args[3] ?? -1);
@@ -48,10 +68,19 @@ public sealed class AsymmetricEquips : Mod
 
 					AsymmetricSystem.AddEquip(equipType, id, newId, side);
 					break;
+				}
 
 				case "AddGlove":
+				{
 					// Args: item ID
-					Item item = ContentSamples.ItemsByType[Convert.ToInt32(args[1])];
+					int type = Convert.ToInt32(args[1]);
+					if (type <= 0 || type >= ItemLoader.ItemCount)
+					{
+						Logger.Error($"Error: AddGlove was called with the item ID {type}, which doesn't exist");
+						return false;
+					}
+
+					Item item = ContentSamples.ItemsByType[type];
 					if (item.handOnSlot == -1 || item.handOffSlot == -1)
 					{
 						Logger.Error("Error: AddGlove was called on item \"" + ItemID.Search.GetName(item.type) + "\", which doesn't set both handOnSlot and handOffSlot");
@@ -60,10 +89,27 @@ public sealed class AsymmetricEquips : Mod
 					AsymmetricSystem.AddEquip(EquipType.HandsOn, item.handOnSlot);
 					AsymmetricSystem.AddEquip(EquipType.HandsOff, item.handOffSlot, side: PlayerSide.Left);
 					break;
+				}
+
+				case "AddSpecialItem":
+				{
+					// Args: item ID
+					int type = Convert.ToInt32(args[1]);
+					if (type <= 0 || type >= ItemLoader.ItemCount)
+					{
+						Logger.Error($"Error: AddSpecialItem was called with the item ID {type}, which doesn't exist");
+						return false;
+					}
+
+					AsymmetricSystem._specialItems.Add(type);
+					break;
+				}
 
 				default:
+				{
 					Logger.Error("Error: Unknown message " + key);
 					break;
+				}
 			}
 		}
 		catch

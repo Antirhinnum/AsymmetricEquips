@@ -1,5 +1,3 @@
-﻿[list][*]Fixed certain non-asymmetric equips not dying correctly when an asymmetric equip was equipped.
-[*]Fixed asymmetric head equips' dyes bleeding into the player's hair.
-[*]Fixed asymmetric balloons not showing up on the menu or when a player first loads into a world.
-[*]Fixed invalid vanilla accessory slots from being used.
-[*]Fixed some code being run when it didn't have to.[/list]
+﻿[list][*]Added the AddSpecialItem and ItemFacingCorrectDirection call methods.
+[*]Added support for Yoraiz0r's Spell and the Pretty Pink Ribbon.
+[*]Added a config for allowing multiple of one item type to be equipped at once. This only works for asymmetric items, and is disabled by default.[/list]

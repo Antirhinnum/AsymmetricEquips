@@ -65,12 +65,10 @@ public sealed class AsymmetricItem : GlobalItem
 			return cache;
 		}
 
-		bool leftSideEquip = side == PlayerSide.Left;
-		bool facingLeft = player.direction == -1;
 		IReadOnlyDictionary<EquipSlot, AsymmetricData> asymmetricsByEquip = AsymmetricSystem.AsymmetricsByEquip;
 
 		AsymmetricData asymmetricData;
-		if (leftSideEquip != facingLeft)
+		if (!aItem.ItemOnFrontSide(player))
 		{
 			// Only equips that default to the player's front side are updated here
 			if (equip.headSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Head, equip.headSlot), out asymmetricData))
@@ -176,6 +174,14 @@ public sealed class AsymmetricItem : GlobalItem
 			};
 			tooltips.Add(line);
 		}
+	}
+
+	/// <summary>
+	/// If true, then this item should show up on the player's front side.
+	/// </summary>
+	public bool ItemOnFrontSide(Player player)
+	{
+		return Side == PlayerSide.Default || (Side == PlayerSide.Left == (player.direction == -1));
 	}
 
 	#region Save

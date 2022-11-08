@@ -52,17 +52,20 @@ public sealed class AsymmetricSystem : ModSystem
 	public static IReadOnlyDictionary<EquipSlot, AsymmetricData> AsymmetricsByEquip { get; private set; }
 
 	/// <summary>
+	/// A list of items to treat asymmetrically even though they aren't registered in <see cref="_asymmetrics"/>.<br/>
+	/// Intended for items that have non-equip slot visuals.
+	/// </summary>
+	internal static readonly List<int> _specialItems = new();
+
+	/// <summary>
 	/// If true, then no more equips can be added.
 	/// </summary>
 	internal static bool _finishedEquips;
 
-	public override void Load()
-	{
-	}
-
 	public override void Unload()
 	{
 		_asymmetrics.Clear();
+		_specialItems.Clear();
 		AsymmetricsByEquip = null;
 	}
 
@@ -80,7 +83,6 @@ public sealed class AsymmetricSystem : ModSystem
 		//	ArmorIDs.Head.GraduationCapBlack, /**/,
 		//	ArmorIDs.Head.GraduationCapBlue, /**/,
 		//	ArmorIDs.Head.GraduationCapMaroon, /**/,
-		//	ArmorIDs.Head.PrettyPinkRibbon, /**/,
 		//	ArmorIDs.Head.TwinMask,  /**/
 		//);
 
@@ -93,6 +95,7 @@ public sealed class AsymmetricSystem : ModSystem
 			new(EquipType.Head, ArmorIDs.Head.StarHairpin, newId: ArmorIDs.Head.FamiliarWig),
 			new(EquipType.Head, ArmorIDs.Head.SeashellHairpin, newId: ArmorIDs.Head.FamiliarWig),
 			new(EquipType.Head, ArmorIDs.Head.GhostarSkullPin, newId: ArmorIDs.Head.FamiliarWig),
+			new(EquipType.Head, ArmorIDs.Head.PrettyPinkRibbon, newId: ArmorIDs.Head.FamiliarWig),
 
 			// Waist equips
 			new(EquipType.Waist, ArmorIDs.Waist.BlizzardinaBottle),
@@ -181,8 +184,10 @@ public sealed class AsymmetricSystem : ModSystem
 			new(EquipType.Balloon, ArmorIDs.Balloon.BundledPartyBalloons, side: PlayerSide.Left)
 
 			// The Royal Scepter isn't here because there's no way to make it draw both under the player's hand and above their arm.
-			// It also has a chunk of out it where the player usually holds it, which is panfully visible when flipped.
+			// It also has a chunk of out it where the player usually holds it, which is painfully visible when flipped.
 		});
+
+		_specialItems.Add(ItemID.Yoraiz0rWings);
 	}
 
 	/// <summary>
@@ -192,7 +197,7 @@ public sealed class AsymmetricSystem : ModSystem
 	/// <returns>Before <see cref="SetStaticDefaults"/> is called, <see langword="false"/>. Otherwise, whether or not <paramref name="item"/> can be worm asymmetrically.</returns>
 	public static bool ItemIsAsymmetrical(Item item)
 	{
-		return AsymmetricsByEquip != null &&
+		return _specialItems.Contains(item.type) || (AsymmetricsByEquip != null &&
 			(AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Head, item.headSlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Body, item.bodySlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Legs, item.legSlot)) ||
@@ -207,7 +212,7 @@ public sealed class AsymmetricSystem : ModSystem
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Neck, item.neckSlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Face, item.faceSlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Balloon, item.balloonSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Beard, item.beardSlot)));
+			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Beard, item.beardSlot))));
 	}
 
 	/// <summary>

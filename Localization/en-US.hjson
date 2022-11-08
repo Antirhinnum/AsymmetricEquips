@@ -1,5 +1,19 @@
 ﻿Mods.AsymmetricEquips:
 {
+	Config:
+	{
+		Header: "Asymmetric Equips Config"
+		ShouldAllowMultiItemEquips:
+		{
+			Label: "Allow Duplicate Asymmetric Equips"
+			Tooltip:
+				'''
+				If true, then the player will be allowed to equip multiple asymmetric items of the same type as long as they're on different sides.
+				Please be aware that this is only meant to allow more customization (ex: different dyes). If you use it to cheat, that's on you.
+				'''
+		}
+	}
+	
 	ExtraTooltip:
 	{
 		FlipPossible: "This item can be worn asymmetrically\nShift+Ctrl+Click to change side"
