@@ -1,6 +1,7 @@
-Ever wanted to wear just one eyepatch? [i:1278] Well now you can!
+Ever wanted to wear just one eyepatch? [i:EyePatch] Well now you can!
 
 Certain items can now be worn asymmetrically, which is noted in their tooltips. Simply hold shift and control, then click the item.
 Note that this can only be done when the item is equipped or in the player's inventory.
 
 For modders, see the Steam Workshop page for Call methods you can use to add support to your own equips!
+For spriters, I would love some sprites for flipped vanilla equips! See the Steam Workshop page for more info.

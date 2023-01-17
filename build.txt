@@ -1,6 +1,6 @@
 displayName = Asymmetric Equipment
 author = Snek
-version = 1.0.2
+version = 1.0.3
 hideCode = false
 hideResources = false
 includeSource = true

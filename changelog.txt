@@ -1,3 +1,1 @@
-﻿[list][*]Added the AddSpecialItem and ItemFacingCorrectDirection call methods.
-[*]Added support for Yoraiz0r's Spell and the Pretty Pink Ribbon.
-[*]Added a config for allowing multiple of one item type to be equipped at once. This only works for asymmetric items, and is disabled by default.[/list]
+﻿[list][*]Added support the Jungle Rose.[/list]

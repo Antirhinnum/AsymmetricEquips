@@ -30,3 +30,19 @@ Able to be called whenever. Returns true if the item is on the player's front si
 [code]mod.Call("ItemOnFrontSide", Item item, Player player)[/code][list][*]item is the item being checked.
 [*]player is the player on which item is equipped.
 [*][b]Ex[/b] (in a ModItem's UpdateAccessory hook):[/list][code]if (asymmetricEquips.Call("ItemOnFrontSide", Item, player)) { player.GetModPlayer<CoolPlayer>().coolItemEquipped = true; }[/code]
+
+[b]Missing Vanilla Equips (Sprites)[/b]
+There are still some equips in vanilla [i]Terraria[/i] that should visually flip, but they need sprites, and I have no experience spriting.
+If you would like to make any of these equips, feel free! I'll credit you in the mod's description.
+The missing equips are as follows:[list][*]Normal, Jellyfish, and Arctic Diving Gears (snorkel)
+[*]Black, Blue, and Maroon Graduation Caps (tassels)
+[*]Magic, Stalker's, and Molten Quivers
+[*]Normal and Lavaproof Tackle Bags
+[*]Architect Gizmo Pack
+[*]Apprentice's Scarf
+[*]Toolbelt
+[*]Queen Bee, Wall of Flesh, and Twins Masks
+[*]Treasure Hunter Shirt (male variant)
+[*]Shroomite Headgear
+[*]Monk's Shirt
+[/list]
