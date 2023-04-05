@@ -1,1 +1,1 @@
-﻿[list][*]Added support the Jungle Rose.[/list]
+﻿[list][*]Ported to 1.4.4.[/list]

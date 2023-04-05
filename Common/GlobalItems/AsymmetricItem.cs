@@ -25,7 +25,7 @@ public sealed class AsymmetricItem : GlobalItem
 	/// The <see cref="EquipType.Balloon"/> equip slot this item uses.<br/>
 	/// This is what <see cref="AsymmetricPlayer.frontBalloon"/> and <see cref="AsymmetricPlayer.frontBalloonInner"/> are set to.
 	/// </summary>
-	public sbyte frontBalloonSlot = -1;
+	public int frontBalloonSlot = -1;
 
 	// Items should not share equip slots or player sides.
 	public override bool InstancePerEntity => true;
@@ -89,43 +89,43 @@ public sealed class AsymmetricItem : GlobalItem
 			}
 			if (equip.handOnSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.HandsOn, equip.handOnSlot), out asymmetricData))
 			{
-				equip.handOnSlot = (sbyte)asymmetricData.newId;
+				equip.handOnSlot = asymmetricData.newId;
 			}
 			if (equip.backSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Back, equip.backSlot), out asymmetricData))
 			{
-				equip.backSlot = (sbyte)asymmetricData.newId;
+				equip.backSlot = asymmetricData.newId;
 			}
 			if (equip.frontSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Front, equip.frontSlot), out asymmetricData))
 			{
-				equip.frontSlot = (sbyte)asymmetricData.newId;
+				equip.frontSlot = asymmetricData.newId;
 			}
 			if (equip.shoeSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Shoes, equip.shoeSlot), out asymmetricData))
 			{
-				equip.shoeSlot = (sbyte)asymmetricData.newId;
+				equip.shoeSlot = asymmetricData.newId;
 			}
 			if (equip.waistSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Waist, equip.waistSlot), out asymmetricData))
 			{
-				equip.waistSlot = (sbyte)asymmetricData.newId;
+				equip.waistSlot = asymmetricData.newId;
 			}
 			if (equip.wingSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Wings, equip.wingSlot), out asymmetricData))
 			{
-				equip.wingSlot = (sbyte)asymmetricData.newId;
+				equip.wingSlot = asymmetricData.newId;
 			}
 			if (equip.shieldSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Shield, equip.shieldSlot), out asymmetricData))
 			{
-				equip.shieldSlot = (sbyte)asymmetricData.newId;
+				equip.shieldSlot = asymmetricData.newId;
 			}
 			if (equip.neckSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Neck, equip.neckSlot), out asymmetricData))
 			{
-				equip.neckSlot = (sbyte)asymmetricData.newId;
+				equip.neckSlot = asymmetricData.newId;
 			}
 			if (equip.faceSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Face, equip.faceSlot), out asymmetricData))
 			{
-				equip.faceSlot = (sbyte)asymmetricData.newId;
+				equip.faceSlot = asymmetricData.newId;
 			}
 			if (equip.beardSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Beard, equip.beardSlot), out asymmetricData))
 			{
-				equip.beardSlot = (sbyte)asymmetricData.newId;
+				equip.beardSlot = asymmetricData.newId;
 			}
 		}
 		else
@@ -133,12 +133,12 @@ public sealed class AsymmetricItem : GlobalItem
 			// Only equips that default to the player's back side are changed here
 			if (equip.handOffSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.HandsOff, equip.handOffSlot), out asymmetricData))
 			{
-				equip.handOffSlot = (sbyte)asymmetricData.newId;
+				equip.handOffSlot = asymmetricData.newId;
 			}
 			if (equip.balloonSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Balloon, equip.balloonSlot), out asymmetricData))
 			{
 				equip.GetGlobalItem<AsymmetricItem>().frontBalloonSlot = equip.balloonSlot;
-				equip.balloonSlot = (sbyte)asymmetricData.newId;
+				equip.balloonSlot = asymmetricData.newId;
 			}
 		}
 

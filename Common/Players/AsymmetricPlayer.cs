@@ -1,6 +1,7 @@
 ﻿using AsymmetricEquips.Common.Data;
 using AsymmetricEquips.Common.GlobalItems;
 using AsymmetricEquips.Common.Systems;
+using MonoMod.Utils;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +11,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.UI;
-using On_Player = On.Terraria.Player;
 
 namespace AsymmetricEquips.Common.Players;
 
@@ -26,13 +26,13 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// The <see cref="EquipType.Balloon"/> equip slot that is drawn over the player.<br/>
 	/// Handles balloons where <see cref="ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer"/> is <see langword="false"/>.
 	/// </summary>
-	public sbyte frontBalloon;
+	public int frontBalloon;
 
 	/// <summary>
 	/// The <see cref="EquipType.Balloon"/> equip slot that is drawn over the player, but under their arm.<br/>
 	/// Handles balloons where <see cref="ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer"/> is <see langword="true"/>.
 	/// </summary>
-	public sbyte frontBalloonInner;
+	public int frontBalloonInner;
 
 	/// <summary>
 	/// The index of the armor shader applied to <see cref="frontBalloon"/>.
@@ -52,6 +52,8 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// Without this, wearing an Eye Patch and an Obsidian Skull would show hair if the eyepatch wasn't visible.
 	/// </remarks>
 	public bool flippedToHair;
+
+	private static readonly FastReflectionHelper.FastInvoker _playerUpdateItemDye = typeof(Player).GetMethod("UpdateItemDye", BindingFlags.Instance | BindingFlags.NonPublic).GetFastInvoker();
 
 	public override void Load()
 	{
@@ -105,7 +107,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 		EquipData?[] data = new EquipData?[vanillaLength];
 		for (int i = 0; i < vanillaLength; i++)
 		{
-			if (self.IsAValidEquipmentSlotForIteration(i))
+			if (self.IsItemSlotUnlockedAndUsable(i))
 			{
 				data[i] = AsymmetricItem.HandleAsymmetricism(self.armor[i], self);
 			}
@@ -119,7 +121,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
 			for (int i = 0; i < slots; i++)
 			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
+				if (loader.ModdedIsItemSlotUnlockedAndUsable(i, self))
 				{
 					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
 					moddedData[i] = AsymmetricItem.HandleAsymmetricism(modAccessorySlot.FunctionalItem, self);
@@ -149,10 +151,10 @@ public sealed class AsymmetricPlayer : ModPlayer
 
 		for (int i = 0; i < 20; i++)
 		{
-			if (self.IsAValidEquipmentSlotForIteration(i))
+			if (self.IsItemSlotUnlockedAndUsable(i))
 			{
 				int armorSlot = i % 10;
-				UpdateSwappedDyes(self, i < 10, self.hideVisibleAccessory[armorSlot], self.armor[i], self.dye[armorSlot]);
+				_playerUpdateItemDye.Invoke(self, new object[] { i < 10, self.hideVisibleAccessory[armorSlot], self.armor[i], self.dye[armorSlot] });
 			}
 		}
 
@@ -161,11 +163,11 @@ public sealed class AsymmetricPlayer : ModPlayer
 			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
 			for (int i = 0; i < mPlayer.SlotCount; i++)
 			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
+				if (loader.ModdedIsItemSlotUnlockedAndUsable(i, self))
 				{
 					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
-					UpdateSwappedDyes(self, true, modAccessorySlot.HideVisuals, modAccessorySlot.FunctionalItem, modAccessorySlot.DyeItem);
-					UpdateSwappedDyes(self, false, modAccessorySlot.HideVisuals, modAccessorySlot.VanityItem, modAccessorySlot.DyeItem);
+					_playerUpdateItemDye.Invoke(self, new object[] { true, modAccessorySlot.HideVisuals, modAccessorySlot.FunctionalItem, modAccessorySlot.DyeItem });
+					_playerUpdateItemDye.Invoke(self, new object[] { false, modAccessorySlot.HideVisuals, modAccessorySlot.VanityItem, modAccessorySlot.DyeItem });
 				}
 			}
 		}
@@ -176,7 +178,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 
 		for (int i = 0; i < vanillaLength; i++)
 		{
-			if (data[i] != null && self.IsAValidEquipmentSlotForIteration(i))
+			if (data[i] != null && self.IsItemSlotUnlockedAndUsable(i))
 			{
 				data[i].Value.Retrieve(self.armor[i]);
 			}
@@ -188,7 +190,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
 			for (int i = 0; i < slots; i++)
 			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
+				if (loader.ModdedIsItemSlotUnlockedAndUsable(i, self))
 				{
 					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
 					moddedData[i].Value.Retrieve(modAccessorySlot.FunctionalItem);

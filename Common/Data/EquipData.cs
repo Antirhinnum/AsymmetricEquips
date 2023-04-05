@@ -11,21 +11,21 @@ internal readonly struct EquipData
 	public readonly int head = -1;
 	public readonly int body = -1;
 	public readonly int legs = -1;
-	public readonly sbyte handOn = -1;
-	public readonly sbyte handOff = -1;
-	public readonly sbyte back = -1;
-	public readonly sbyte front = -1;
-	public readonly sbyte shoe = -1;
-	public readonly sbyte waist = -1;
-	public readonly sbyte wing = -1;
-	public readonly sbyte shield = -1;
-	public readonly sbyte neck = -1;
-	public readonly sbyte face = -1;
-	public readonly sbyte balloon = -1;
-	public readonly sbyte beard = -1;
+	public readonly int handOn = -1;
+	public readonly int handOff = -1;
+	public readonly int back = -1;
+	public readonly int front = -1;
+	public readonly int shoe = -1;
+	public readonly int waist = -1;
+	public readonly int wing = -1;
+	public readonly int shield = -1;
+	public readonly int neck = -1;
+	public readonly int face = -1;
+	public readonly int balloon = -1;
+	public readonly int beard = -1;
 
 	// Custom slots
-	public readonly sbyte frontBalloon;
+	public readonly int frontBalloon;
 
 	public EquipData(Item item)
 	{

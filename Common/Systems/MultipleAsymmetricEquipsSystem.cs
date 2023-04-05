@@ -19,12 +19,12 @@ public sealed class MultipleAsymmetricEquipsSystem : ModSystem
 {
 	public override void Load()
 	{
-		IL.Terraria.UI.ItemSlot.AccCheck_Inner += AllowMultipleAsymmetricAccessories;
+		Terraria.UI.IL_ItemSlot.AccCheck += AllowMultipleAsymmetricAccessories;
 	}
 
 	public override void Unload()
 	{
-		IL.Terraria.UI.ItemSlot.AccCheck_Inner -= AllowMultipleAsymmetricAccessories;
+		Terraria.UI.IL_ItemSlot.AccCheck -= AllowMultipleAsymmetricAccessories;
 	}
 
 	private static void AllowMultipleAsymmetricAccessories(ILContext il)

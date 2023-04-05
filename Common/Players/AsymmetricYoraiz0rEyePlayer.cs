@@ -17,12 +17,12 @@ internal sealed class AsymmetricYoraiz0rEyePlayer : ModPlayer
 {
 	public override void Load()
 	{
-		IL.Terraria.Player.UpdateVisibleAccessory += MakeYoraiz0rEyeAsymmetric;
+		IL_Player.UpdateVisibleAccessory += MakeYoraiz0rEyeAsymmetric;
 	}
 
 	public override void Unload()
 	{
-		IL.Terraria.Player.UpdateVisibleAccessory -= MakeYoraiz0rEyeAsymmetric;
+		IL_Player.UpdateVisibleAccessory -= MakeYoraiz0rEyeAsymmetric;
 	}
 
 	private static void MakeYoraiz0rEyeAsymmetric(ILContext il)

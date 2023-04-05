@@ -90,7 +90,7 @@ public sealed class AsymmetricSystem : ModSystem
 		_asymmetrics.AddRange(new List<AsymmetricData>()
 		{
 			// Head equips
-			new(EquipType.Head, ArmorIDs.Head.JungleRose, newId: ArmorIDs.Head.FamiliarWig),
+			//new(EquipType.Head, ArmorIDs.Head.JungleRose, newId: ArmorIDs.Head.FamiliarWig), // Turned into a Face equip.
 			new(EquipType.Head, ArmorIDs.Head.EyePatch, newId: ArmorIDs.Head.FamiliarWig),
 			new(EquipType.Head, ArmorIDs.Head.HeartHairpin, newId: ArmorIDs.Head.FamiliarWig),
 			new(EquipType.Head, ArmorIDs.Head.StarHairpin, newId: ArmorIDs.Head.FamiliarWig),
@@ -117,6 +117,7 @@ public sealed class AsymmetricSystem : ModSystem
 			// Some of these could do with being mirrored, maybe?
 			// Like, the Obsidian Rose doesn't vanish: It just moves behind the player's head
 			new(EquipType.Face, ArmorIDs.Face.ArcaneFlower),
+			new(EquipType.Face, ArmorIDs.Face.JungleRose),
 			new(EquipType.Face, ArmorIDs.Face.NaturesGift),
 			new(EquipType.Face, ArmorIDs.Face.ObsidianRose),
 			new(EquipType.Face, ArmorIDs.Face.MoltenSkullRose, ArmorIDs.Face.LavaSkull),
@@ -131,10 +132,10 @@ public sealed class AsymmetricSystem : ModSystem
 			new(EquipType.HandsOn, ArmorIDs.HandOn.CharmofMyths),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.DiamondRing),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.HuntressBuckler),
+			new(EquipType.HandsOn, ArmorIDs.HandOn.LavaCharm),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.ManaRegenerationBand),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.MoonStone),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.SunStone),
-			//new(EquipType.HandsOn, ArmorIDs.HandOn.LavaCharm),
 
 			// Gloves
 			new(EquipType.HandsOn, ArmorIDs.HandOn.FeralClaws),
@@ -165,8 +166,8 @@ public sealed class AsymmetricSystem : ModSystem
 			new(EquipType.HandsOff, ArmorIDs.HandOff.FrogWebbing, side: PlayerSide.Left),
 			new(EquipType.HandsOn, ArmorIDs.HandOn.BoneGlove),
 			new(EquipType.HandsOff, ArmorIDs.HandOff.BoneGlove, side: PlayerSide.Left),
-			//new(EquipType.HandsOn, ArmorIDs.HandOn.HandOfCreation),
-			//new(EquipType.HandsOff, ArmorIDs.HandOff.HandOfCreation),
+			new(EquipType.HandsOn, ArmorIDs.HandOn.HandOfCreation),
+			new(EquipType.HandsOff, ArmorIDs.HandOff.HandOfCreation, side: PlayerSide.Left),
 
 			// Balloon equips
 			new(EquipType.Balloon, ArmorIDs.Balloon.AmberHorseshoeBalloon, side: PlayerSide.Left),
@@ -186,7 +187,7 @@ public sealed class AsymmetricSystem : ModSystem
 			new(EquipType.Balloon, ArmorIDs.Balloon.YellowHorseshoeBalloon, side: PlayerSide.Left),
 			new(EquipType.Balloon, ArmorIDs.Balloon.BalloonAnimal, side: PlayerSide.Left),
 			new(EquipType.Balloon, ArmorIDs.Balloon.BundledPartyBalloons, side: PlayerSide.Left),
-			//new(EquipType.Balloon, ArmorIDs.Balloon.HorseshoeBundle, side: PlayerSide.Left),
+			new(EquipType.Balloon, ArmorIDs.Balloon.HorseshoeBundle, side: PlayerSide.Left),
 
 			// The Royal Scepter isn't here because there's no way to make it draw both under the player's hand and above their arm.
 			// It also has a chunk of out it where the player usually holds it, which is painfully visible when flipped.

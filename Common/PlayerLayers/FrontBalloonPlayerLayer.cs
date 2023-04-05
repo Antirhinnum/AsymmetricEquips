@@ -28,12 +28,12 @@ public class FrontBalloonPlayerLayer : PlayerDrawLayer
 		#region Setup
 
 		// Setup drawInfo so that we can use the vanilla balloon drawing method instead of manually drawing.
-		sbyte oldBalloon = drawInfo.drawPlayer.balloon;
+		int oldBalloon = drawInfo.drawPlayer.balloon;
 		int oldCBalloon = drawInfo.cBalloon;
 		Vector2 originalPosition = drawInfo.Position; // If missing, then the next layer draw will be offset
 
 		AsymmetricPlayer aPlayer = drawInfo.drawPlayer.GetModPlayer<AsymmetricPlayer>();
-		sbyte frontBalloon = aPlayer.frontBalloon;
+		int frontBalloon = aPlayer.frontBalloon;
 		int frontBalloonDye = aPlayer.cFrontBalloon;
 
 		if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[frontBalloon])
