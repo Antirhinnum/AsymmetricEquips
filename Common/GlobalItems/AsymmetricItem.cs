@@ -68,7 +68,7 @@ public sealed class AsymmetricItem : GlobalItem
 		IReadOnlyDictionary<EquipSlot, AsymmetricData> asymmetricsByEquip = AsymmetricSystem.AsymmetricsByEquip;
 
 		AsymmetricData asymmetricData;
-		if (!aItem.ItemOnFrontSide(player))
+		if (!aItem.ItemOnDefaultSide(equip, player))
 		{
 			// Only equips that default to the player's front side are updated here
 			if (equip.headSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Head, equip.headSlot), out asymmetricData))
@@ -177,11 +177,17 @@ public sealed class AsymmetricItem : GlobalItem
 	}
 
 	/// <summary>
-	/// If true, then this item should show up on the player's front side.
+	/// If true, then this item should show up normally when the player is facing right.
 	/// </summary>
-	public bool ItemOnFrontSide(Player player)
+	public bool ItemOnDefaultSide(Item item, Player player)
 	{
-		return Side == PlayerSide.Default || (Side == PlayerSide.Left == (player.direction == -1));
+		PlayerSide defaultSide = PlayerSide.Right;
+		PlayerSide specialSide = AsymmetricSystem.SpecialItemDefaultSide(item.type);
+		if (specialSide != PlayerSide.Default)
+		{
+			defaultSide = specialSide;
+		}
+		return Side == PlayerSide.Default || (Side == defaultSide == (player.direction == 1));
 	}
 
 	#region Save
