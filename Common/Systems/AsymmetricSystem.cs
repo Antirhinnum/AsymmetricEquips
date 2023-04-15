@@ -204,22 +204,22 @@ public sealed class AsymmetricSystem : ModSystem
 	/// <returns>Before <see cref="SetStaticDefaults"/> is called, <see langword="false"/>. Otherwise, whether or not <paramref name="item"/> can be worm asymmetrically.</returns>
 	public static bool ItemIsAsymmetrical(Item item)
 	{
-		return ItemIsSpecial(item.type) || (AsymmetricsByEquip != null &&
-			(AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Head, item.headSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Body, item.bodySlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Legs, item.legSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.HandsOn, item.handOnSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.HandsOff, item.handOffSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Back, item.backSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Front, item.frontSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Shoes, item.shoeSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Waist, item.waistSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Wings, item.wingSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Shield, item.shieldSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Neck, item.neckSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Face, item.faceSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Balloon, item.balloonSlot)) ||
-			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Beard, item.beardSlot))));
+		return ItemIsSpecial(item.type) || (_asymmetrics != null &&
+			(_asymmetrics.Any(d => d.id == item.headSlot && d.equipType == EquipType.Head) ||
+			_asymmetrics.Any(d => d.id == item.bodySlot && d.equipType == EquipType.Body) ||
+			_asymmetrics.Any(d => d.id == item.legSlot && d.equipType == EquipType.Legs) ||
+			_asymmetrics.Any(d => d.id == item.handOnSlot && d.equipType == EquipType.HandsOn) ||
+			_asymmetrics.Any(d => d.id == item.handOffSlot && d.equipType == EquipType.HandsOff) ||
+			_asymmetrics.Any(d => d.id == item.backSlot && d.equipType == EquipType.Back) ||
+			_asymmetrics.Any(d => d.id == item.frontSlot && d.equipType == EquipType.Front) ||
+			_asymmetrics.Any(d => d.id == item.shoeSlot && d.equipType == EquipType.Shoes) ||
+			_asymmetrics.Any(d => d.id == item.waistSlot && d.equipType == EquipType.Waist) ||
+			_asymmetrics.Any(d => d.id == item.wingSlot && d.equipType == EquipType.Wings) ||
+			_asymmetrics.Any(d => d.id == item.shieldSlot && d.equipType == EquipType.Shield) ||
+			_asymmetrics.Any(d => d.id == item.neckSlot && d.equipType == EquipType.Neck) ||
+			_asymmetrics.Any(d => d.id == item.faceSlot && d.equipType == EquipType.Face) ||
+			_asymmetrics.Any(d => d.id == item.balloonSlot && d.equipType == EquipType.Balloon) ||
+			_asymmetrics.Any(d => d.id == item.beardSlot && d.equipType == EquipType.Beard)));
 	}
 
 	/// <summary>
