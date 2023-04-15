@@ -50,29 +50,7 @@ public class FrontBalloonPlayerLayer : PlayerDrawLayer
 			Main.instance.LoadAccBalloon(frontBalloon);
 		}
 
-		Vector2 originalOffset = Main.OffsetsPlayerOffhand[drawInfo.drawPlayer.bodyFrame.Y / 56];
-		if (drawInfo.drawPlayer.direction != 1)
-			originalOffset.X = drawInfo.drawPlayer.width - originalOffset.X;
-
-		if (drawInfo.drawPlayer.gravDir != 1f)
-			originalOffset.Y -= drawInfo.drawPlayer.height;
-
-		Vector2 newOffset = Main.OffsetsPlayerOnhand[drawInfo.drawPlayer.bodyFrame.Y / 56];
-		if (drawInfo.drawPlayer.direction != 1)
-			newOffset.X = drawInfo.drawPlayer.width - newOffset.X;
-
-		if (drawInfo.drawPlayer.gravDir != 1f)
-			newOffset.Y -= drawInfo.drawPlayer.height;
-
-		// Main.OffsetsPlayerOnhand has odd values in it.
-		// These work fine for actual HandOn equips, but they misalign balloons by half a pixel.
-		newOffset += new Vector2(newOffset.X % 2f, newOffset.Y % 2f);
-
-		drawInfo.Position -= originalOffset * new Vector2(1f, drawInfo.drawPlayer.gravDir);
-		drawInfo.Position += newOffset * new Vector2(1f, drawInfo.drawPlayer.gravDir);
-
-		// An extra offset to help line up the balloon string with the player's hand
-		drawInfo.Position.X -= 6f * drawInfo.drawPlayer.direction;
+		drawInfo.Position += FrontBalloonOffset(drawInfo.drawPlayer);
 
 		#endregion Setup
 
@@ -82,5 +60,39 @@ public class FrontBalloonPlayerLayer : PlayerDrawLayer
 		drawInfo.drawPlayer.balloon = oldBalloon;
 		drawInfo.cBalloon = oldCBalloon;
 		drawInfo.Position = originalPosition;
+	}
+
+	/// <summary>
+	/// Gets the offset to apply to <see cref="PlayerDrawSet.Position"/> for a player's front balloon.
+	/// </summary>
+	/// <param name="player">The player that has the front balloon equipped.</param>
+	/// <returns>The offset, accounting for directions and framing.</returns>
+	internal static Vector2 FrontBalloonOffset(Player player)
+	{
+		Vector2 originalOffset = Main.OffsetsPlayerOffhand[player.bodyFrame.Y / 56];
+		if (player.direction != 1)
+			originalOffset.X = player.width - originalOffset.X;
+
+		if (player.gravDir != 1f)
+			originalOffset.Y -= player.height;
+
+		Vector2 newOffset = Main.OffsetsPlayerOnhand[player.bodyFrame.Y / 56];
+		if (player.direction != 1)
+			newOffset.X = player.width - newOffset.X;
+
+		if (player.gravDir != 1f)
+			newOffset.Y -= player.height;
+
+		// Main.OffsetsPlayerOnhand has odd values in it.
+		// These work fine for actual HandOn equips, but they misalign balloons by half a pixel.
+		newOffset += new Vector2(newOffset.X % 2f, newOffset.Y % 2f);
+
+		Vector2 finalOffset = Vector2.Zero;
+		finalOffset -= originalOffset * new Vector2(1f, player.gravDir);
+		finalOffset += newOffset * new Vector2(1f, player.gravDir);
+
+		// An extra offset to help line up the balloon string with the player's hand
+		finalOffset.X -= 6f * player.direction;
+		return finalOffset;
 	}
 }

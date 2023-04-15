@@ -1,5 +1,6 @@
 ﻿using AsymmetricEquips.Common.Data;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -55,7 +56,7 @@ public sealed class AsymmetricSystem : ModSystem
 	/// A list of items to treat asymmetrically even though they aren't registered in <see cref="_asymmetrics"/>.<br/>
 	/// Intended for items that have non-equip slot visuals.
 	/// </summary>
-	internal static readonly List<int> _specialItems = new();
+	internal static readonly List<(int itemId, PlayerSide side)> _specialItems = new();
 
 	/// <summary>
 	/// If true, then no more equips can be added.
@@ -192,7 +193,7 @@ public sealed class AsymmetricSystem : ModSystem
 			// It also has a chunk of out it where the player usually holds it, which is painfully visible when flipped.
 		});
 
-		_specialItems.Add(ItemID.Yoraiz0rWings);
+		AddSpecialItem(ItemID.Yoraiz0rWings);
 	}
 
 	/// <summary>
@@ -202,7 +203,7 @@ public sealed class AsymmetricSystem : ModSystem
 	/// <returns>Before <see cref="SetStaticDefaults"/> is called, <see langword="false"/>. Otherwise, whether or not <paramref name="item"/> can be worm asymmetrically.</returns>
 	public static bool ItemIsAsymmetrical(Item item)
 	{
-		return _specialItems.Contains(item.type) || (AsymmetricsByEquip != null &&
+		return ItemIsSpecial(item.type) || (AsymmetricsByEquip != null &&
 			(AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Head, item.headSlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Body, item.bodySlot)) ||
 			AsymmetricsByEquip.ContainsKey(new EquipSlot(EquipType.Legs, item.legSlot)) ||
@@ -238,5 +239,34 @@ public sealed class AsymmetricSystem : ModSystem
 	internal static bool AddEquip(EquipType equipType, int id, int newId = -1, PlayerSide side = PlayerSide.Right)
 	{
 		return AddEquip(new(equipType, id, newId, side));
+	}
+
+	/// <summary>
+	/// Registers an item as a special item.
+	/// </summary>
+	/// <param name="itemId">The item type to register.</param>
+	/// <param name="side">The side of the player this item appears on when the player is facing right.</param>
+	/// <returns><see langword="false"/> if this item is already registered as special, <see langword="true"/> otherwise.</returns>
+	internal static bool AddSpecialItem(int itemId, PlayerSide side = PlayerSide.Right)
+	{
+		if (ItemIsSpecial(itemId))
+		{
+			return false;
+		}
+
+		_specialItems.Add((itemId, side));
+		return true;
+	}
+
+	[Pure]
+	private static bool ItemIsSpecial(int itemId)
+	{
+		return _specialItems.Any((pair) => pair.itemId == itemId);
+	}
+
+	[Pure]
+	internal static PlayerSide SpecialItemDefaultSide(int itemId)
+	{
+		return ItemIsSpecial(itemId) ? _specialItems.First(p => p.itemId == itemId).side : PlayerSide.Default;
 	}
 }

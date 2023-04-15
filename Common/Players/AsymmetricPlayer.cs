@@ -320,6 +320,14 @@ public sealed class AsymmetricPlayer : ModPlayer
 		data.Retrieve(item);
 	}
 
+	public override void FrameEffects()
+	{
+		// Call FrameEffects on frontBalloons.
+		EquipTexture frontBalloonEquip = EquipLoader.GetEquipTexture(EquipType.Balloon, frontBalloon);
+
+		frontBalloonEquip?.FrameEffects(Player, EquipType.Balloon);
+	}
+
 	/// <summary>
 	/// When the player Shift + Control + Clicks an item, try to
 	/// </summary>

@@ -1,4 +1,6 @@
 using AsymmetricEquips.Common.GlobalItems;
+using AsymmetricEquips.Common.PlayerLayers;
+using AsymmetricEquips.Common.Players;
 using AsymmetricEquips.Common.Systems;
 using System;
 using Terraria;
@@ -22,11 +24,23 @@ public sealed class AsymmetricEquips : Mod
 		{
 			switch (key)
 			{
-				case "ItemOnFrontSide":
+				case "ItemOnFrontSide": // deprecated
+				{
+					Logger.Debug("Warning: \"ItemOnFrontSide\" is deprecated. Please use \"ItemOnDefaultSide\" instead.");
+					goto case "ItemOnDefaultSide";
+				}
+				case "ItemOnDefaultSide":
 				{
 					// Args: Item, Player
 					Item item = (Item)args[1];
-					return !item.TryGetGlobalItem(out AsymmetricItem aItem) || aItem.ItemOnFrontSide((Player)args[2]);
+					return !item.TryGetGlobalItem(out AsymmetricItem aItem) || aItem.ItemOnDefaultSide(item, (Player)args[2]);
+				}
+				case "GetFrontBalloon":
+				{
+					// Args: Player
+					Player player = (Player)args[1];
+					AsymmetricPlayer aPlayer = player.GetModPlayer<AsymmetricPlayer>();
+					return ((int)aPlayer.frontBalloon, aPlayer.cFrontBalloon, (int)aPlayer.frontBalloonInner, aPlayer.cFrontBalloonInner, FrontBalloonPlayerLayer.FrontBalloonOffset(player));
 				}
 			}
 		}
@@ -101,7 +115,20 @@ public sealed class AsymmetricEquips : Mod
 						return false;
 					}
 
-					AsymmetricSystem._specialItems.Add(type);
+					PlayerSide side = (PlayerSide)Convert.ToInt32(args[2] ?? PlayerSide.Right);
+					if (!Enum.IsDefined(side))
+					{
+						Logger.Error($"Error: The passed side \"{side}\" must be 1, or 2");
+						return false;
+					}
+
+					if (side == PlayerSide.Default)
+					{
+						Logger.Error($"Error: AddSpecialItem cannot be called with a side of 0.");
+						return false;
+					}
+
+					AsymmetricSystem.AddSpecialItem(type, side);
 					break;
 				}
 
