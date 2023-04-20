@@ -11,6 +11,8 @@ namespace AsymmetricEquips;
 
 public sealed class AsymmetricEquips : Mod
 {
+	private static bool _deprecatedError = false;
+
 	public override object Call(params object[] args)
 	{
 		Array.Resize(ref args, 5);
@@ -26,7 +28,12 @@ public sealed class AsymmetricEquips : Mod
 			{
 				case "ItemOnFrontSide": // deprecated
 				{
-					Logger.Debug("Warning: \"ItemOnFrontSide\" is deprecated. Please use \"ItemOnDefaultSide\" instead.");
+					if (!_deprecatedError)
+					{
+						Logger.Debug("Warning: \"ItemOnFrontSide\" is deprecated. Please use \"ItemOnDefaultSide\" instead.");
+						_deprecatedError = true;
+					}
+
 					goto case "ItemOnDefaultSide";
 				}
 				case "ItemOnDefaultSide":
