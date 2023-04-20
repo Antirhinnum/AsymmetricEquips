@@ -1,9 +1,2 @@
-[i]1.4.4 version of update 1.1.0.[/i]
-
-API changes:[list]
-[*]Changed `ItemOnFrontSide` to `ItemOnDefaultSide`. The method now takes an `Item` parameter. `ItemOnFrontSide` is still available, but deprecated.
-[*]`AddSpecialItem` now takes an optional `PlayerSide` parameter, for specifying which side a special item is on a player facing right.
-[*]Added `GetFrontBalloon`, which returns a 5-tuple of data about the player's front balloon slot.[/list]
-
-Misc.:[list]
-[*]Fixed a bug where asymmetric balloons wouldn't call `FrameEffects`.[/list]
+[i]1.4.4 version of update 1.1.2.[/i]
+[list][*]Fixed using the deprecated method "ItemOnFrontSide" spamming the logs.[/list]
