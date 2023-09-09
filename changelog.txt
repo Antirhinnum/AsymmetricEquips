@@ -1,1 +1,1 @@
-﻿[list][*]Fixed using the deprecated method "ItemOnFrontSide" spamming the logs.[/list]
+﻿[list][*](Hopefully) fixed issues with trying to access mod accessory slots.[/list]

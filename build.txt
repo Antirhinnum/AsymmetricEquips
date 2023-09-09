@@ -1,9 +1,8 @@
 displayName = Asymmetric Equipment
 author = Snek
 homepage = https://github.com/Antirhinnum/AsymmetricEquips
-version = 1.1.2
-hideCode = true
-hideResources = true
-includeSource = false
+version = 1.1.3
+hideCode = false
+hideResources = false
+includeSource = true
 buildIgnore = LICENSE, README.md, *.pdn
-includePDB = true

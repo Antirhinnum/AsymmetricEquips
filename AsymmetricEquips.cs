@@ -11,8 +11,6 @@ namespace AsymmetricEquips;
 
 public sealed class AsymmetricEquips : Mod
 {
-	private static bool _deprecatedError = false;
-
 	public override object Call(params object[] args)
 	{
 		Array.Resize(ref args, 5);
@@ -26,16 +24,7 @@ public sealed class AsymmetricEquips : Mod
 		{
 			switch (key)
 			{
-				case "ItemOnFrontSide": // deprecated
-				{
-					if (!_deprecatedError)
-					{
-						Logger.Debug("Warning: \"ItemOnFrontSide\" is deprecated. Please use \"ItemOnDefaultSide\" instead.");
-						_deprecatedError = true;
-					}
-
-					goto case "ItemOnDefaultSide";
-				}
+				case "ItemOnFrontSide":
 				case "ItemOnDefaultSide":
 				{
 					// Args: Item, Player
@@ -125,7 +114,7 @@ public sealed class AsymmetricEquips : Mod
 					PlayerSide side = (PlayerSide)Convert.ToInt32(args[2] ?? PlayerSide.Right);
 					if (!Enum.IsDefined(side))
 					{
-						Logger.Error($"Error: The passed side \"{side}\" must be 1, or 2");
+						Logger.Error($"Error: The passed side \"{side}\" must be 1 or 2");
 						return false;
 					}
 

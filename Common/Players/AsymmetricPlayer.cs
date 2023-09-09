@@ -53,12 +53,17 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// </remarks>
 	public bool flippedToHair;
 
+	/// <summary>
+	/// The indicies of the player's armor and vanity in <see cref="Player.armor"/>.
+	/// </summary>
+	private static readonly int[] _playerArmorSlots = { 0, 1, 2, 10, 11, 12 };
+
 	public override void Load()
 	{
 		_ModAccessorySlotPlayer_NetHandler_SendSlot = typeof(ModAccessorySlotPlayer).GetNestedType("NetHandler", BindingFlags.NonPublic | BindingFlags.Static).GetMethod("SendSlot", BindingFlags.Public | BindingFlags.Static);
 
 		On_Player.GetHairSettings += HideHairForAsymmetrics;
-		On_Player.PlayerFrame += HijackFrame;
+		On_Player.PlayerFrame += ArmorAsymmetricismAndDyeUpdate;
 		On_Player.ResetVisibleAccessories += ResetCustomEquipSlots;
 		On_Player.UpdateDyes += ResetCustomDyeSlots;
 		On_Player.UpdateItemDye += UpdateDyeSlots;
@@ -70,7 +75,7 @@ public sealed class AsymmetricPlayer : ModPlayer
 		_ModAccessorySlotPlayer_NetHandler_SendSlot = null;
 
 		On_Player.GetHairSettings -= HideHairForAsymmetrics;
-		On_Player.PlayerFrame -= HijackFrame;
+		On_Player.PlayerFrame -= ArmorAsymmetricismAndDyeUpdate;
 		On_Player.ResetVisibleAccessories -= ResetCustomEquipSlots;
 		On_Player.UpdateDyes -= ResetCustomDyeSlots;
 		On_Player.UpdateItemDye -= UpdateDyeSlots;
@@ -97,138 +102,22 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// <summary>
 	/// Handles actually making equips show or not show based on their side.
 	/// </summary>
-	private static void HijackFrame(On_Player.orig_PlayerFrame orig, Player self)
+	private static void ArmorAsymmetricismAndDyeUpdate(On_Player.orig_PlayerFrame orig, Player self)
 	{
-		#region Setup
-
-		int vanillaLength = self.armor.Length;
-		EquipData?[] data = new EquipData?[vanillaLength];
-		for (int i = 0; i < vanillaLength; i++)
+		EquipData[] armorData = new EquipData[_playerArmorSlots.Length];
+		for (int i = 0; i < _playerArmorSlots.Length; i++)
 		{
-			if (self.IsAValidEquipmentSlotForIteration(i))
-			{
-				data[i] = AsymmetricItem.HandleAsymmetricism(self.armor[i], self);
-			}
+			int armorSlot = _playerArmorSlots[i];
+			armorData[i] = AsymmetricItem.HandleAsymmetricism(self.armor[armorSlot], self);
 		}
 
-		EquipData?[] moddedData = null;
-		if (self.TryGetModPlayer(out ModAccessorySlotPlayer mPlayer))
-		{
-			int slots = mPlayer.SlotCount;
-			moddedData = new EquipData?[slots * 2];
-			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
-			for (int i = 0; i < slots; i++)
-			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
-				{
-					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
-					moddedData[i] = AsymmetricItem.HandleAsymmetricism(modAccessorySlot.FunctionalItem, self);
-					moddedData[i + slots] = AsymmetricItem.HandleAsymmetricism(modAccessorySlot.VanityItem, self);
-				}
-			}
-		}
-
-		#endregion Setup
-
+		self.UpdateDyes();
 		orig(self);
 
-		// If no items are asymmetric, then there's nothing to clean up.
-		if (data.All(a => a == null) && (moddedData == null || moddedData!.All(a => a == null)))
+		for (int i = 0; i < _playerArmorSlots.Length; i++)
 		{
-			return;
-		}
-
-		// UpdateDyes usually runs way earlier than PlayerFrame, which results in a one-frame delay between an item switching sides and its dye applying.
-		// This fixes that by updating dyes using the new equip slots.
-
-		#region Custom Dye Logic
-
-		// Some equips that change slots to be asymmetric (ex: handsOn/handsOff) have a one-frame delay before the correct dye is applied.
-		// This used to be fixed by calling Player.UpdateDyes() again, but that caused other issues (specifically, the Tax Collector's Suit wasn't getting dyed correctly).
-		// Now, dyes are manually reassigned for these equips.
-
-		for (int i = 0; i < 20; i++)
-		{
-			if (self.IsAValidEquipmentSlotForIteration(i))
-			{
-				int armorSlot = i % 10;
-				UpdateSwappedDyes(self, i < 10, self.hideVisibleAccessory[armorSlot], self.armor[i], self.dye[armorSlot]);
-			}
-		}
-
-		if (mPlayer != null)
-		{
-			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
-			for (int i = 0; i < mPlayer.SlotCount; i++)
-			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
-				{
-					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
-					UpdateSwappedDyes(self, true, modAccessorySlot.HideVisuals, modAccessorySlot.FunctionalItem, modAccessorySlot.DyeItem);
-					UpdateSwappedDyes(self, false, modAccessorySlot.HideVisuals, modAccessorySlot.VanityItem, modAccessorySlot.DyeItem);
-				}
-			}
-		}
-
-		#endregion Custom Dye Logic
-
-		#region Restore
-
-		for (int i = 0; i < vanillaLength; i++)
-		{
-			if (data[i] != null && self.IsAValidEquipmentSlotForIteration(i))
-			{
-				data[i].Value.Retrieve(self.armor[i]);
-			}
-		}
-
-		if (mPlayer != null)
-		{
-			int slots = mPlayer.SlotCount;
-			AccessorySlotLoader loader = LoaderManager.Get<AccessorySlotLoader>();
-			for (int i = 0; i < slots; i++)
-			{
-				if (loader.ModdedIsAValidEquipmentSlotForIteration(i, self))
-				{
-					ModAccessorySlot modAccessorySlot = loader.Get(i, self);
-					moddedData[i].Value.Retrieve(modAccessorySlot.FunctionalItem);
-					moddedData[i + slots].Value.Retrieve(modAccessorySlot.VanityItem);
-				}
-			}
-		}
-
-		#endregion Restore
-	}
-
-	/// <summary>
-	/// Updates dyes for equips that swap slots to be asymmetric.<br/>
-	/// Specifically, <see cref="EquipType.HandsOn"/> and <see cref="EquipType.HandsOff"/>.
-	/// </summary>
-	private static void UpdateSwappedDyes(Player player, bool isNotInVanitySlot, bool isSetToHidden, Item armorItem, Item dyeItem)
-	{
-		if (armorItem.IsAir || (isNotInVanitySlot && isSetToHidden))
-			return;
-
-		if (armorItem.handOnSlot > 0)
-			player.cHandOn = dyeItem.dye;
-
-		if (armorItem.handOffSlot > 0)
-			player.cHandOff = dyeItem.dye;
-
-		if (armorItem.balloonSlot > 0)
-		{
-			if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[armorItem.balloonSlot])
-				player.cBalloonFront = dyeItem.dye;
-			else
-				player.cBalloon = dyeItem.dye;
-		}
-
-		if (armorItem.TryGetGlobalItem(out AsymmetricItem aItem) && aItem.frontBalloonSlot > -1 && player.TryGetModPlayer(out AsymmetricPlayer aPlayer))
-		{
-			if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[aItem.frontBalloonSlot])
-				aPlayer.cFrontBalloonInner = dyeItem.dye;
-			else
-				aPlayer.cFrontBalloon = dyeItem.dye;
+			int armorSlot = _playerArmorSlots[i];
+			armorData[i].Retrieve(self.armor[armorSlot]);
 		}
 	}
 
