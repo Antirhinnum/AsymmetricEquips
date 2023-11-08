@@ -1,12 +1,12 @@
 ﻿using AsymmetricEquips.Common.Data;
 using AsymmetricEquips.Common.GlobalItems;
 using AsymmetricEquips.Common.Systems;
-using MonoMod.Utils;
 using System;
 using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
@@ -62,7 +62,6 @@ public sealed class AsymmetricPlayer : ModPlayer
 	{
 		_ModAccessorySlotPlayer_NetHandler_SendSlot = typeof(ModAccessorySlotPlayer).GetNestedType("NetHandler", BindingFlags.NonPublic | BindingFlags.Static).GetMethod("SendSlot", BindingFlags.Public | BindingFlags.Static);
 
-		On_Player.GetHairSettings += HideHairForAsymmetrics;
 		On_Player.PlayerFrame += ArmorAsymmetricismAndDyeUpdate;
 		On_Player.ResetVisibleAccessories += ResetCustomEquipSlots;
 		On_Player.UpdateDyes += ResetCustomDyeSlots;
@@ -74,7 +73,6 @@ public sealed class AsymmetricPlayer : ModPlayer
 	{
 		_ModAccessorySlotPlayer_NetHandler_SendSlot = null;
 
-		On_Player.GetHairSettings -= HideHairForAsymmetrics;
 		On_Player.PlayerFrame -= ArmorAsymmetricismAndDyeUpdate;
 		On_Player.ResetVisibleAccessories -= ResetCustomEquipSlots;
 		On_Player.UpdateDyes -= ResetCustomDyeSlots;
@@ -88,14 +86,12 @@ public sealed class AsymmetricPlayer : ModPlayer
 	/// This makes hair appear/disappear when the player turns around.<br/>
 	/// This hook fixes that. It also makes sure that dyes don't transfer over to the head.
 	/// </summary>
-	private void HideHairForAsymmetrics(On_Player.orig_GetHairSettings orig, Player self, out bool fullHair, out bool hatHair, out bool hideHair, out bool backHairDraw, out bool drawsBackHairWithoutHeadgear)
+	public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 	{
-		orig(self, out fullHair, out hatHair, out hideHair, out backHairDraw, out drawsBackHairWithoutHeadgear);
-
-		if (self.TryGetModPlayer(out AsymmetricPlayer aPlayer) && aPlayer.flippedToHair)
+		if (flippedToHair)
 		{
-			hideHair |= self.faceHead >= 0;
-			self.cHead = 0;
+			drawInfo.hideHair |= drawInfo.drawPlayer.faceHead >= 0;
+			drawInfo.cHead = 0;
 		}
 	}
 
