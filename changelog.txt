@@ -1,1 +1,1 @@
-﻿[list][*](Hopefully) fixed issues with trying to access mod accessory slots.[/list]
+﻿[list][*]Fixed a niche issue where the player's hair would become dyed when wearing an asymmetric head equip.[/list]
