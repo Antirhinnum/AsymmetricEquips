@@ -3,4 +3,6 @@ Ever wanted to wear just one eyepatch? [i:EyePatch] Well now you can!
 Certain items can now be worn asymmetrically, which is noted in their tooltips. Simply hold shift and control, then click the item.
 Note that this can only be done when the item is equipped or in the player's inventory.
 
+See the mod's config for additional options on how asymmetric items work.
+
 Modders: This mod features Mod.Call support! See the Github for available methods.

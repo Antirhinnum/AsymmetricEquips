@@ -12,4 +12,8 @@ public sealed class MultiItemConfig : ModConfig
 	[Tooltip($"$Mods.{nameof(AsymmetricEquips)}.Config.{nameof(ShouldAllowMultiItemEquips)}.Tooltip")]
 	[DefaultValue(false)]
 	public bool ShouldAllowMultiItemEquips;
+
+	[DefaultValue(false)]
+	[ReloadRequired]
+	public bool Aggressive;
 }

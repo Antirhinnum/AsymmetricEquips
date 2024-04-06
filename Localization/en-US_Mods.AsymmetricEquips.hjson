@@ -20,5 +20,14 @@ Configs: {
 				Please be aware that this is only meant to allow more customization (ex: different dyes). If you use it to cheat, that's on you.
 				'''
 		}
+
+		Aggressive: {
+			Label: Aggressive Compatibility
+			Tooltip:
+				'''
+				If true, then almost every visually equippable item (vanilla and modded) will be marked as asymmetric.
+				Please be aware that this may have unintended consequences, especially with armor sets.
+				'''
+		}
 	}
 }

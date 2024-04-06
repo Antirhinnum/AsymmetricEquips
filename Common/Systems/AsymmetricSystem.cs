@@ -1,4 +1,5 @@
-﻿using AsymmetricEquips.Common.Data;
+﻿using AsymmetricEquips.Common.Configs;
+using AsymmetricEquips.Common.Data;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -195,6 +196,45 @@ public sealed class AsymmetricSystem : ModSystem
 		});
 
 		AddSpecialItem(ItemID.Yoraiz0rWings);
+	}
+
+	public override void PostSetupContent()
+	{
+		if (ModContent.GetInstance<MultiItemConfig>().Aggressive)
+		{
+			RegisterAllPossibleEquips();
+		}
+	}
+
+	// Assume that all equips will be hidden when flipped.
+	private static void RegisterAllPossibleEquips()
+	{
+		static void AddAsymmetricData(EquipType type, int slotToCheck, int newId = -1, PlayerSide side = PlayerSide.Right)
+		{
+			if (slotToCheck > -1 && !_asymmetrics.Any(d => d.equipType == type && d.id == slotToCheck))
+			{
+				_asymmetrics.Add(new(type, slotToCheck, newId, side));
+			}
+		}
+
+		foreach (Item item in ContentSamples.ItemsByType.Values)
+		{
+			AddAsymmetricData(EquipType.Head, item.headSlot, ArmorIDs.Head.FamiliarWig);
+			AddAsymmetricData(EquipType.Body, item.bodySlot);
+			AddAsymmetricData(EquipType.Legs, item.legSlot);
+			AddAsymmetricData(EquipType.HandsOn, item.handOnSlot);
+			AddAsymmetricData(EquipType.HandsOff, item.handOffSlot, side: PlayerSide.Left);
+			AddAsymmetricData(EquipType.Back, item.backSlot);
+			AddAsymmetricData(EquipType.Front, item.frontSlot);
+			AddAsymmetricData(EquipType.Shoes, item.shoeSlot);
+			AddAsymmetricData(EquipType.Waist, item.waistSlot);
+			AddAsymmetricData(EquipType.Wings, item.wingSlot);
+			AddAsymmetricData(EquipType.Shield, item.shieldSlot);
+			AddAsymmetricData(EquipType.Neck, item.neckSlot);
+			AddAsymmetricData(EquipType.Face, item.faceSlot);
+			AddAsymmetricData(EquipType.Balloon, item.balloonSlot, side: PlayerSide.Left);
+			AddAsymmetricData(EquipType.Beard, item.beardSlot);
+		}
 	}
 
 	/// <summary>

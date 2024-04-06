@@ -1,1 +1,3 @@
-[list][*]Fixed a niche issue where the player's hair would become dyed when wearing an asymmetric head equip.[/list]
+Asymmetric Equipment Version v{ModVersion}
+
+[list][*]Added an "aggressive compatibility" mode, in which every item that could possibly be asymmetric is marked as such. Enable it in the config.[/list]
