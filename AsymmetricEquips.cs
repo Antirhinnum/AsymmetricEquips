@@ -11,6 +11,27 @@ namespace AsymmetricEquips;
 
 public sealed class AsymmetricEquips : Mod
 {
+	public override void Load()
+	{
+		On_Player.FindBuffIndex += FixCoblerModIssue;
+	}
+
+	private static int FixCoblerModIssue(On_Player.orig_FindBuffIndex orig, Player self, int type)
+	{
+		// The Atherius Mod (`CoblerMod` internally) has an accessory slot that only activates is the player has a specific buff.
+		// Unfortunately, Terraria's player select menu's player dummies are either created before mods load or with a stale buff count value,
+		//   so calling Player::HasBuff() (which in turn calls Player::FindBuffIndex(), which in turn checks Player::buffImmune) causes errors.
+		// Normally, this is a silent error. If this mod is also enabled, the game crashes.
+		// So, uh, fix that.
+		// This should probably be a tMod PR, but oh well!
+		if (self.buffImmune.Length != BuffLoader.BuffCount)
+		{
+			Array.Resize(ref self.buffImmune, BuffLoader.BuffCount);
+		}
+
+		return orig(self, type);
+	}
+
 	public override object Call(params object[] args)
 	{
 		Array.Resize(ref args, 5);
