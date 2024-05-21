@@ -1,0 +1,76 @@
+﻿using AsymmetricEquips.Utilities;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Reflection;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ModLoader;
+
+namespace AsymmetricEquips.Content.ModSupport;
+
+/// <summary>
+/// A wrapper for mods that use their own <see cref="PlayerDrawLayer"/>s to draw balloons.
+/// </summary>
+public sealed class ModSupportBalloonLayer : PlayerDrawLayer
+{
+	public static readonly List<(string ModName, PlayerDrawLayer OriginalLayer, MethodInfo DrawMethod)> wrappedLayersInfo = new();
+
+	/// <summary>
+	/// Wraps a <see cref="PlayerDrawLayer"/> that draws balloons, allowing them to work with the front balloon system.
+	/// </summary>
+	/// <typeparam name="T">The <see cref="PlayerDrawLayer"/> to wrap.</typeparam>
+	public static void RegisterBalloonDrawLayer<T>() where T : PlayerDrawLayer
+	{
+		RegisterBalloonDrawLayer(ModContent.GetInstance<T>());
+	}
+
+	/// <inheritdoc cref="RegisterBalloonDrawLayer{T}()"/>
+	public static void RegisterBalloonDrawLayer(PlayerDrawLayer instance)
+	{
+		MethodInfo drawMethod = instance.GetType().GetMethod(nameof(Draw), ReflectionHelper.AllFlags);
+		wrappedLayersInfo.Add((instance.Mod.Name, instance, drawMethod));
+	}
+
+	public override Position GetDefaultPosition()
+	{
+		return new Between(PlayerDrawLayers.OffhandAcc, PlayerDrawLayers.ArmOverItem);
+	}
+
+	public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+	{
+		return wrappedLayersInfo.Count > 0;
+	}
+
+	protected override void Draw(ref PlayerDrawSet drawInfo)
+	{
+		foreach ((string modName, PlayerDrawLayer layer, MethodInfo drawMethod) in wrappedLayersInfo)
+		{
+			Player drawPlayer = drawInfo.drawPlayer;
+			(int frontBalloon, int cFrontBalloon, _, _, Vector2 offset) = ModSupportHelpers.GetFrontBalloon(drawPlayer);
+
+			// Normal balloon drawing logic needs:
+			// - drawInfo.drawPlayer.balloon
+			// - drawInfo.drawPlayer.cBalloon
+			// - drawInfo.Position
+			// After changing these, we can just call the original draw method.
+
+			(int origBalloon, int origCBalloon, Vector2 origPosition) = (drawPlayer.balloon, drawPlayer.cBalloon, drawInfo.Position);
+			drawPlayer.balloon = (sbyte)frontBalloon;
+			drawPlayer.cBalloon = cFrontBalloon;
+			drawInfo.Position += offset;
+
+			if (layer.GetDefaultVisibility(drawInfo))
+			{
+				// Call the original layer's draw method.
+				object[] parameters = new object[] { drawInfo };
+				drawMethod.Invoke(layer, parameters);
+				drawInfo = (PlayerDrawSet)parameters[0]; // ref params, fun
+			}
+
+			// Reset back to normal.
+			drawPlayer.balloon = origBalloon;
+			drawPlayer.cBalloon = origCBalloon;
+			drawInfo.Position = origPosition;
+		}
+	}
+}

@@ -88,7 +88,6 @@ public sealed class AsymmetricSystem : ModSystem
 		//	ArmorIDs.Head.TwinMask,  /**/
 		//);
 
-		_asymmetrics.Clear();
 		_asymmetrics.AddRange(new List<AsymmetricData>()
 		{
 			// Head equips
