@@ -107,8 +107,14 @@ public sealed class AsymmetricPlayer : ModPlayer
 			armorData[i] = AsymmetricItem.HandleAsymmetricism(self.armor[armorSlot], self);
 		}
 
-		self.UpdateDyes();
-		orig(self);
+		// Why is it that calling Player::UpdateDyes() here seems to turn every silent
+		//   player loading error into a crash to desktop? I don't know!
+		try
+		{
+			self.UpdateDyes();
+			orig(self);
+		}
+		catch { }
 
 		for (int i = 0; i < _playerArmorSlots.Length; i++)
 		{
