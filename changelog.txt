@@ -1,3 +1,3 @@
 Asymmetric Equipment Version v{ModVersion}
 
-[list][*]Hopefully fixed the mod crashing to game to desktop whenever another mod causes an error on the player select screen.[/list]
+[list][*]Fixed a game crash with Thorium Mod compatibility.[/list]

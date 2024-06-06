@@ -2,6 +2,7 @@ using AsymmetricEquips.Common.GlobalItems;
 using AsymmetricEquips.Common.PlayerLayers;
 using AsymmetricEquips.Common.Players;
 using AsymmetricEquips.Common.Systems;
+using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -56,8 +57,11 @@ public sealed class AsymmetricEquips : Mod
 				{
 					// Args: Player
 					Player player = (Player)args[1];
-					AsymmetricPlayer aPlayer = player.GetModPlayer<AsymmetricPlayer>();
-					return ((int)aPlayer.frontBalloon, aPlayer.cFrontBalloon, (int)aPlayer.frontBalloonInner, aPlayer.cFrontBalloonInner, FrontBalloonPlayerLayer.FrontBalloonOffset(player));
+					if (player.TryGetModPlayer(out AsymmetricPlayer aPlayer))
+					{
+						return (aPlayer.frontBalloon, aPlayer.cFrontBalloon, aPlayer.frontBalloonInner, aPlayer.cFrontBalloonInner, FrontBalloonPlayerLayer.FrontBalloonOffset(player));
+					}
+					return (-1, 0, -1, 0, Vector2.Zero);
 				}
 			}
 		}

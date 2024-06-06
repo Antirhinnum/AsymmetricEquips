@@ -72,7 +72,17 @@ internal sealed class ThoriumAsymmetricSheathPlayer : ModPlayer
 
 	private static bool ShouldDrawSheathBack(Player player)
 	{
-		Item playerSheath = player.GetModPlayer<ThoriumAsymmetricSheathPlayer>().currentSheath;
-		return playerSheath == null || playerSheath.GetGlobalItem<AsymmetricItem>().ItemOnDefaultSide(playerSheath, player);
+		// Always draw the back sheath if we can't check the sheath for asymmetricism.
+		if (!player.TryGetModPlayer(out ThoriumAsymmetricSheathPlayer sheathPlayer))
+		{
+			return true;
+		}
+
+		if (sheathPlayer.currentSheath is not Item sheath)
+		{
+			return true;
+		}
+
+		return sheath.TryGetGlobalItem(out AsymmetricItem asymmetricItem) && asymmetricItem.ItemOnDefaultSide(sheath, player);
 	}
 }

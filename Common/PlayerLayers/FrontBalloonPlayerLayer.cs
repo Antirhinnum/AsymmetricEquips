@@ -32,11 +32,14 @@ public class FrontBalloonPlayerLayer : PlayerDrawLayer
 		int oldCBalloon = drawInfo.cBalloon;
 		Vector2 originalPosition = drawInfo.Position; // If missing, then the next layer draw will be offset
 
-		AsymmetricPlayer aPlayer = drawInfo.drawPlayer.GetModPlayer<AsymmetricPlayer>();
+		if (!drawInfo.drawPlayer.TryGetModPlayer(out AsymmetricPlayer aPlayer))
+		{
+			return;
+		}
 		int frontBalloon = aPlayer.frontBalloon;
 		int frontBalloonDye = aPlayer.cFrontBalloon;
 
-		if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[frontBalloon])
+		if (frontBalloon >= 0 && ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[frontBalloon])
 		{
 			frontBalloon = aPlayer.frontBalloonInner;
 			frontBalloonDye = aPlayer.cFrontBalloonInner;

@@ -137,7 +137,10 @@ public sealed class AsymmetricItem : GlobalItem
 			}
 			if (equip.balloonSlot > 0 && asymmetricsByEquip.TryGetValue(new EquipSlot(EquipType.Balloon, equip.balloonSlot), out asymmetricData))
 			{
-				equip.GetGlobalItem<AsymmetricItem>().frontBalloonSlot = equip.balloonSlot;
+				if (equip.TryGetGlobalItem(out AsymmetricItem asymmetricItem))
+				{
+					asymmetricItem.frontBalloonSlot = equip.balloonSlot;
+				}
 				equip.balloonSlot = asymmetricData.newId;
 			}
 		}
