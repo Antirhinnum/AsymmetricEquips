@@ -4,6 +4,8 @@
 
 Ever wanted to wear just one eyepatch? Well now you can!
 
+<video src=".github\assets\demo.webm" width="320" height="240" autoplay muted>A demonstration of the mod. A player walks in from the left, turns around several times, then walks off to the right. The player's accessories visibly change sides as they turn.</video>
+
 Certain items can now be worn asymmetrically, which is noted in their tooltips. Simply hold shift and control, then click the item.
 Note that this can only be done when the item is equipped or in the player's inventory.
 
